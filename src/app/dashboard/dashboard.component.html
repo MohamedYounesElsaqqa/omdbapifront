@@ -1,0 +1,79 @@
+<div *ngIf="role === 'ADMIN'">
+  <label for="dataSource">Select Data Source:</label>
+  <select id="dataSource" [(ngModel)]="dataSource" (change)="fetchMovies()">
+    <option value="external">External Service</option>
+    <option value="database">Database</option>
+  </select>
+</div>
+
+<button (click)="logout()">Logout</button>
+<div class="search-container"   *ngIf=" role === 'USER'">
+  <input type="text" [(ngModel)]="imdbID" placeholder="Enter IMDb ID" />
+  <input type="text" [(ngModel)]="title" placeholder="Enter title" />
+  <input type="text" [(ngModel)]="year" placeholder="Enter year" />
+  <input type="text" [(ngModel)]="type" placeholder="Enter type" />
+  <button (click)="searchMovies()">Search</button>
+</div>
+<div *ngIf="movies.length > 0">
+  <h3>Movies List</h3>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th *ngIf="role === 'ADMIN'">Select</th>
+        <th>Poster</th>
+        <th>Title</th>
+        <th>Year</th>
+        <th>Type</th>
+        <th>IMDB ID</th>
+        <th *ngIf="dataSource === 'database'">Rating</th>
+        <th *ngIf=" role === 'USER'">Rating</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let movie of movies">
+
+        <td *ngIf="role === 'ADMIN'">
+          <input 
+            type="checkbox" 
+            [checked]="isMovieSelected(movie)" 
+            (change)="toggleMovieSelection(movie)" />
+        </td>
+        
+      
+        <td>
+          <img [src]="movie.Poster" alt="{{ movie.Title }} poster" 
+               style="width: 100px; cursor: pointer;" 
+               (click)="fetchMovieDetails(movie.imdbID)" />
+        </td>
+
+        <td>{{ movie.Title }}</td>
+        <td>{{ movie.Year }}</td>
+        <td>{{ movie.Type }}</td>
+        <td>{{ movie.imdbID }}</td>
+        <td *ngIf="dataSource === 'database'">{{ movie.averageRating }}</td>
+        <td *ngIf="role === 'USER'">
+          <input type="number" [(ngModel)]="movie.score" min="1" max="5" placeholder="Rate (1-5)" />
+          <button (click)="addRating(movie)">Submit Rating</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="role === 'ADMIN'">
+    <button *ngIf="dataSource === 'external'" (click)="saveSelectedMovies()" 
+            [disabled]="selectedMovies.length === 0">
+      Save Selected Movies
+    </button>
+
+    <button *ngIf="dataSource === 'database'" (click)="deleteSelectedMovies()" 
+            [disabled]="selectedMovies.length === 0">
+      Delete Selected Movies
+    </button>
+  </div>
+
+  <div class="pagination">
+    <button (click)="onPrevPage()" [disabled]="currentPage === 1">Previous</button>
+    <span>Page {{ currentPage }}</span>
+    <button (click)="onNextPage()">Next</button>
+  </div>
+</div>
