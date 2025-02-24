@@ -18,8 +18,7 @@ If you don't have Node.js installed, download it from Node.js official website.
 
 2️⃣ Clone the Repository
 
-git clone https://github.com/your-username/movie-management-app.git
-cd movie-management-app/frontend
+git clone https://github.com/MohamedYounesElsaqqa/omdbapifront
 
 3️⃣ Install Dependencies
 
